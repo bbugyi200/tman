@@ -61,8 +61,9 @@ print("```", stdout.decode().strip(), "```", sep="\n")
 ]]]]] -->
 ```
 usage: tman [-h] [-c CONFIG_FILE] [-L [FILE[:LEVEL][@FORMAT]]] [-v]
+            {start,add} ...
 
-Contains the tman package's main entry point.
+Don't have a good day. Have a great day.
 
 optional arguments:
   -c CONFIG_FILE, --config CONFIG_FILE
@@ -85,6 +86,16 @@ optional arguments:
                         multiple times and has a default argument of '+'.
   -v, --verbose         How verbose should the output be? This option can be
                         specified multiple times (e.g. -v, -vv, -vvv, ...).
+
+subcommands:
+  {start,add}
+    start               Start the system's torrent service, add any missing
+                        torrents to it (i.e. torrents added via `tman add
+                        ...`), wait configured amount of time, and then
+                        shutdown the system torrent service we started
+                        earlier.
+    add                 Qeueue new torrent to download next time `tman start`
+                        is run.
 ```
 <!-- [[[[[end]]]]] -->
 
