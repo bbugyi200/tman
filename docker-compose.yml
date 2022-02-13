@@ -1,0 +1,16 @@
+---
+version: '3.7'
+services:
+  bbugyi200.tman:
+    build:
+      args:
+        USER_ID: "${USER_ID:-1000}"
+        GROUP_ID: "${GROUP_ID:-1000}"
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/tman:delegated
+    working_dir: /tman
+    environment:
+      - BETTER_EXCEPTIONS
+      - CC_REPO_URL

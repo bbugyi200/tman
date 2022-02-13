@@ -1,0 +1,23 @@
+{
+  "template": "https://github.com/python-boltons/cc-python",
+  "commit": "d08ae8243ef75603e4ccc0af0cbcdfdcaccc550a",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "author": "Bryan M Bugyi",
+      "email": "bryanbugyi34@gmail.com",
+      "github_username": "bbugyi200",
+      "git_org_name": "bbugyi200",
+      "git_repo_name": "tman",
+      "package_name": "tman",
+      "pypi_package_name": "torrent-manager",
+      "read_the_docs_domain": "tman",
+      "package_description": "Torrent manager enables you to download / seed your torrents on your own schedule.",
+      "package_type": "application",
+      "_template": "https://github.com/python-boltons/cc-python",
+      "package_path": "tman",
+      "package_module": "tman"
+    }
+  },
+  "directory": null
+}
