@@ -12,3 +12,10 @@ The format is based on [Keep a Changelog], and this project adheres to
 ## [Unreleased](https://github.com/bbugyi200/tman/compare/0.1.0...HEAD)
 
 No notable changes have been made.
+
+
+## [0.1.0](https://github.com/bbugyi200/tman/releases/tag/0.1.0) - 2022-02-13
+
+### Miscellaneous
+
+* First release.
