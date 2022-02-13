@@ -32,6 +32,12 @@ def run_add(cfg: AddConfig) -> int:
     return 0
 
 
+def signal_handler(signum: int, frame: FrameType | None) -> None:
+    """Generic signal handler (used to make sure exit handlers trigger)."""
+    del frame
+    sys.exit(128 + signum)
+
+
 @runner
 def run_start(cfg: StartConfig) -> int:
     """Runner for the `tman start` command."""
@@ -54,10 +60,6 @@ def run_start(cfg: StartConfig) -> int:
         "Downloading / seeding torrents for configured amount of time.",
         seconds=cfg.runtime,
     )
-
-    def signal_handler(signum: int, frame: FrameType | None) -> None:
-        del frame
-        sys.exit(128 + signum)
 
     atexit.register(execute_commands, *cfg.shutdown_commands)
     signal.signal(signal.SIGTERM, signal_handler)
