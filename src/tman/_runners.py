@@ -27,8 +27,15 @@ logger = Logger(__name__)
 def run_add(cfg: AddConfig) -> int:
     """Runner for the `tman add ...` command."""
     cfg.torrent_bucket.parent.mkdir(parents=True, exist_ok=True)
+
+    logger.info(
+        "Adding torrent to queue.",
+        downlaod_dir=cfg.download_dir,
+        magnet_url=cfg.magnet_url,
+    )
     with cfg.torrent_bucket.open("a+") as f:
         f.write(f"{cfg.download_dir} {cfg.magnet_url}\n")
+
     return 0
 
 
