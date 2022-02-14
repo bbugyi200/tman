@@ -60,7 +60,7 @@ def run_start(cfg: StartConfig) -> int:
             )
             add_cmds.append(cmd)
 
-        execute_commands(*add_cmds)
+        execute_commands(*add_cmds, strict=False)
         cfg.torrent_bucket.unlink()
 
     logger.info(
@@ -76,8 +76,24 @@ def run_start(cfg: StartConfig) -> int:
     return 0
 
 
-def execute_commands(*cmds: str) -> None:
+def execute_commands(*cmds: str, strict: bool = True) -> None:
     """Executes all of the system commands in `cmds`."""
-    for cmd in cmds:
-        logger.info("Executing system command.", command=cmd)
-        os.system(cmd)
+    log = logger.bind_fargs(locals())
+
+    for i, cmd in enumerate(cmds):
+        log.info("Executing system command.", command=cmd)
+        ec = os.system(cmd)
+        if ec != 0 and strict:
+            log.error(
+                "Aborting after command failed with non-zero exit code.",
+                commands_not_run=cmd[i + 1 :],
+                exit_code=ec,
+                failed_command=cmd,
+            )
+            return
+        elif ec != 0:
+            log.warning(
+                "Command failded with a non-zero exit status.",
+                exit_code=ec,
+                failed_command=cmd,
+            )
