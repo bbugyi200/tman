@@ -50,7 +50,13 @@ def run_start(cfg: StartConfig) -> int:
     """Runner for the `tman start` command."""
     cfg.torrent_bucket.parent.mkdir(parents=True, exist_ok=True)
 
-    execute_commands(*cfg.startup_commands)
+    if not execute_commands(*cfg.startup_commands):
+        logger.error(
+            "Failed to run startup commands (e.g. to start VPN). Aborting...",
+            startup_commands=cfg.startup_commands,
+        )
+        return 1
+
     if cfg.torrent_bucket.is_file():
         add_cmds = []
         for line in cfg.torrent_bucket.open():
@@ -76,7 +82,7 @@ def run_start(cfg: StartConfig) -> int:
     return 0
 
 
-def execute_commands(*cmds: str, strict: bool = True) -> None:
+def execute_commands(*cmds: str, strict: bool = True) -> bool:
     """Executes all of the system commands in `cmds`."""
     log = logger.bind_fargs(locals())
 
@@ -90,10 +96,12 @@ def execute_commands(*cmds: str, strict: bool = True) -> None:
                 exit_code=ec,
                 failed_command=cmd,
             )
-            return
+            return False
         elif ec != 0:
             log.warning(
                 "Command failed with a non-zero exit status.",
                 exit_code=ec,
                 failed_command=cmd,
             )
+
+    return True
