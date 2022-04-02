@@ -86,6 +86,7 @@ def execute_commands(*cmds: str, strict: bool = True) -> bool:
     """Executes all of the system commands in `cmds`."""
     log = logger.bind_fargs(locals())
 
+    result = True
     for i, cmd in enumerate(cmds):
         log.info("Executing system command.", command=cmd)
         ec = os.system(cmd)
@@ -103,5 +104,6 @@ def execute_commands(*cmds: str, strict: bool = True) -> bool:
                 exit_code=ec,
                 failed_command=cmd,
             )
+            result = False
 
-    return True
+    return result
