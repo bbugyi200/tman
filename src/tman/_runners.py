@@ -89,6 +89,7 @@ def execute_commands(*cmds: str, strict: bool = True) -> bool:
     result = True
     for i, cmd in enumerate(cmds):
         log.info("Executing system command.", command=cmd)
+
         ec = os.system(cmd)
         if ec != 0 and strict:
             log.error(
@@ -97,8 +98,10 @@ def execute_commands(*cmds: str, strict: bool = True) -> bool:
                 exit_code=ec,
                 failed_command=cmd,
             )
-            return False
-        elif ec != 0:
+            result = False
+            break
+
+        if ec != 0:
             log.warning(
                 "Command failed with a non-zero exit status.",
                 exit_code=ec,
