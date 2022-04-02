@@ -93,7 +93,7 @@ def execute_commands(*cmds: str, strict: bool = True) -> None:
             return
         elif ec != 0:
             log.warning(
-                "Command failded with a non-zero exit status.",
+                "Command failed with a non-zero exit status.",
                 exit_code=ec,
                 failed_command=cmd,
             )
