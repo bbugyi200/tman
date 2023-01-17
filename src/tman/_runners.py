@@ -64,12 +64,12 @@ def run_start(cfg: StartConfig) -> int:
     signal.signal(signal.SIGTERM, signal_handler)
 
     # run validation command
-    popen = sp.Popen(
-        cfg.validation.command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE
-    )
-    stdout, stderr = popen.communicate()
-    output = stdout.decode().strip()
     for i in range(cfg.validation.retries):
+        popen = sp.Popen(
+            cfg.validation.command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE
+        )
+        stdout, stderr = popen.communicate()
+        output = stdout.decode().strip()
         if output == cfg.validation.good_output:
             logger.info(
                 "Validation command Succeeded.",
@@ -79,14 +79,19 @@ def run_start(cfg: StartConfig) -> int:
             )
             break
         else:
+            logger.warning(
+                "Validation command failed. Retrying...",
+                command=cfg.validation.command,
+                attempt=i + 1,
+                expected_output=cfg.validation.good_output,
+                actual_output=output,
+                stderr=stderr.decode().strip(),
+            )
             time.sleep(1)
     else:
         logger.error(
-            "Validation command failed.",
-            command=cfg.validation.command,
-            expected_output=cfg.validation.good_output,
-            actual_output=output,
-            stderr=stderr.decode().strip(),
+            "Validation command failed too many times.",
+            retries=cfg.validation.retries,
         )
         return 1
 
