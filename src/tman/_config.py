@@ -7,6 +7,7 @@ from typing import Any, List, Literal, Sequence
 
 import clack
 from clack import xdg
+from dataclasses import dataclass
 
 from . import APP_NAME
 
@@ -25,6 +26,13 @@ class Config(clack.Config):
     )
 
 
+@dataclass
+class ValidateOptions:
+    command: str
+    good_output: str
+    retries: int
+
+
 class StartConfig(Config):
     """Config for the 'start' subcommand."""
 
@@ -34,8 +42,7 @@ class StartConfig(Config):
     add_command: str
     runtime: int
     shutdown_commands: List[str]
-    validate_command: str
-    validate_good_output: str
+    validation: ValidateOptions
     startup_commands: List[str]
 
 

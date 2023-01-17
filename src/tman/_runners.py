@@ -65,26 +65,32 @@ def run_start(cfg: StartConfig) -> int:
 
     # run validation command
     popen = sp.Popen(
-        cfg.validate_command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE
+        cfg.validation.command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE
     )
     stdout, stderr = popen.communicate()
     output = stdout.decode().strip()
-    if output == cfg.validate_good_output:
-        logger.info(
-            "Validation command Succeeded.",
-            command=cfg.validate_command,
-            output=cfg.validate_good_output,
-        )
+    for i in range(cfg.validation.retries):
+        if output == cfg.validation.good_output:
+            logger.info(
+                "Validation command Succeeded.",
+                command=cfg.validation.command,
+                output=cfg.validation.good_output,
+                attempt=i + 1,
+            )
+            break
+        else:
+            time.sleep(1)
     else:
         logger.error(
             "Validation command failed.",
-            command=cfg.validate_command,
-            expected_output=cfg.validate_good_output,
+            command=cfg.validation.command,
+            expected_output=cfg.validation.good_output,
             actual_output=output,
             stderr=stderr.decode().strip(),
         )
         return 1
 
+    # add new torrents from file
     if cfg.torrent_bucket.is_file():
         add_cmds = []
         for line in cfg.torrent_bucket.open():
