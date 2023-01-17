@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, List, Literal, Sequence
 
 import clack
 from clack import xdg
-from dataclasses import dataclass
 
 from . import APP_NAME
 
