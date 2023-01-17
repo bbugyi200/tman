@@ -80,7 +80,7 @@ def run_start(cfg: StartConfig) -> int:
             break
         else:
             logger.warning(
-                "Validation command failed. Retrying...",
+                "Validation command failed.",
                 command=cfg.validation.command,
                 attempt=i + 1,
                 expected_output=cfg.validation.good_output,
