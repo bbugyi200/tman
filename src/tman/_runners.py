@@ -72,7 +72,7 @@ def run_start(cfg: StartConfig) -> int:
         output = stdout.decode().strip()
         if output == cfg.validation.good_output:
             logger.info(
-                "Validation command Succeeded.",
+                "Validation command succeeded.",
                 command=cfg.validation.command,
                 output=cfg.validation.good_output,
                 attempt=i + 1,
