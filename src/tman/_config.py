@@ -34,6 +34,8 @@ class StartConfig(Config):
     add_command: str
     runtime: int
     shutdown_commands: List[str]
+    validate_command: str
+    validate_good_output: str
     startup_commands: List[str]
 
 

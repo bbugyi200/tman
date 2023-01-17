@@ -5,6 +5,7 @@ from __future__ import annotations
 import atexit
 import os
 import signal
+import subprocess as sp
 import sys
 import time
 from types import FrameType
@@ -50,10 +51,37 @@ def run_start(cfg: StartConfig) -> int:
     """Runner for the `tman start` command."""
     cfg.torrent_bucket.parent.mkdir(parents=True, exist_ok=True)
 
+    # run startup commands
     if not execute_commands(*cfg.startup_commands):
         logger.error(
             "Failed to run startup commands (e.g. to start VPN). Aborting...",
             startup_commands=cfg.startup_commands,
+        )
+        return 1
+
+    # register shutdown commands
+    atexit.register(execute_commands, *cfg.shutdown_commands)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    # run validation command
+    popen = sp.Popen(
+        cfg.validate_command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE
+    )
+    stdout, stderr = popen.communicate()
+    output = stdout.decode().strip()
+    if output == cfg.validate_good_output:
+        logger.info(
+            "Validation command Succeeded.",
+            command=cfg.validate_command,
+            output=cfg.validate_good_output,
+        )
+    else:
+        logger.error(
+            "Validation command failed.",
+            command=cfg.validate_command,
+            expected_output=cfg.validate_good_output,
+            actual_output=output,
+            stderr=stderr.decode().strip(),
         )
         return 1
 
@@ -73,9 +101,6 @@ def run_start(cfg: StartConfig) -> int:
         "Downloading / seeding torrents for configured amount of time.",
         seconds=cfg.runtime,
     )
-
-    atexit.register(execute_commands, *cfg.shutdown_commands)
-    signal.signal(signal.SIGTERM, signal_handler)
 
     time.sleep(cfg.runtime)
 
